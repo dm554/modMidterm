@@ -2,7 +2,7 @@ SuperHot Quake 4
 
 Description
     
-      Time only move when you move. Use this abilityy to play through Quake 4 in a way you have never thought of.
+      Time only move when you move. Use this ability to play through Quake 4 in a way you have never thought of.
 
 Abilities 
       
