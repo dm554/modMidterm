@@ -119,6 +119,14 @@ const idEventDef EV_Player_AllowNewObjectives( "<allownewobjectives>" );
 
 // RAVEN END
 
+static int ticTimer;
+static int chronoTimer;
+static bool chronoOn;
+static bool chronoCount;
+static bool dashOn;
+static int dashTimer;
+static int dashCount;
+
 CLASS_DECLARATION( idActor, idPlayer )
 //	EVENT( EV_Player_HideDatabaseEntry,		idPlayer::Event_HideDatabaseEntry )
 	EVENT( EV_Player_ZoomIn,				idPlayer::Event_ZoomIn )
@@ -8550,6 +8558,24 @@ void idPlayer::PerformImpulse( int impulse ) {
    			}
    			break;
    		}
+		//Dash
+		case IMPULSE_23:{
+			if (dashCount < 5){
+				dashOn = true;
+				physicsObj.SetSpeed(1000, 1000); 
+				dashCount++;
+			}
+			break;
+		}
+
+		//Chrono
+		case IMPULSE_24:{
+			if (chronoCount < 1){
+				chronoOn = true;
+				chronoCount++;
+			}
+			break;
+		}
 				
 		case IMPULSE_28: {
  			if ( gameLocal.isClient || entityNumber == gameLocal.localClientNum ) {
@@ -9284,7 +9310,42 @@ Called every tic for each player
 */
 void idPlayer::Think( void ) {
 	renderEntity_t *headRenderEnt;
- 
+	
+//My CODE	
+	
+	//Chrono
+	if (chronoOn){
+		chronoTimer++;
+	}
+	if (chronoTimer > 300){
+		chronoOn = false;
+		chronoTimer = 0;
+	}
+
+	//TimeStop
+	if (ticTimer < 1000){
+		ticTimer++;
+	}
+	if (!gameLocal.inCinematic && physicsObj.IsAtRest && ticTimer >= 1000){
+		g_stopTime.SetBool(1);
+	}
+	else if (!chronoOn){
+		g_stopTime.SetBool(1);
+	}
+	else{
+		g_stopTime.SetBool(0);
+	}
+
+	//Dash
+	if (dashOn){
+		dashTimer++;
+	}
+	if (dashTimer > 10){
+		dashOn = false;
+		dashTimer = 0;
+		physicsObj.SetSpeed(0, 0);
+	}
+
 	if ( talkingNPC ) {
 		if ( !talkingNPC.IsValid() ) {
 			talkingNPC = NULL;
