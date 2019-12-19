@@ -9311,7 +9311,7 @@ Called every tic for each player
 void idPlayer::Think( void ) {
 	renderEntity_t *headRenderEnt;
 	
-//My CODE	
+//My CODE Recreation
 	
 	//Chrono
 	if (chronoOn){
